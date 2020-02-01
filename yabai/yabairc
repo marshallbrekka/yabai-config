@@ -1,0 +1,4 @@
+#!/bin/bash
+
+source $HOME/.config/yabai/settings
+source $HOME/.config/yabai/signals

@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+yabai -m signal --add \
+      label=uebersicht \
+      event=space_changed \
+      action="~/.config/yabai/scripts/signal_uebersicht.sh"
+
+yabai -m signal --add \
+      label=display_added \
+      event=display_added \
+      action="~/.config/yabai/scripts/displays_changed.sh"
+
+yabai -m signal --add \
+      label=display_removed \
+      event=display_removed \
+      action="~/.config/yabai/scripts/displays_changed.sh"

@@ -1,0 +1,68 @@
+# open terminal
+alt + cmd - return : osascript ~/.config/skhd/scripts/open_terminal.script
+
+
+# focus window
+alt - k : yabai -m window --focus prev
+alt - j : yabai -m window --focus next
+
+# swap window
+shift + alt - k : yabai -m window --swap prev
+shift + alt - j : yabai -m window --swap next
+
+# send window to monitor
+ctrl + alt - k  : yabai -m window --display prev;
+ctrl + alt - j  : yabai -m window --display next;
+
+# Toggle Fullscreen
+alt + ctrl - f : yabai -m window --toggle zoom-fullscreen
+
+# Balance windows
+alt + ctrl- b : yabai -m space --balance
+
+# Toggle vertical/horizontal split
+alt + ctrl- s : yabai -m window --toggle split
+
+
+# fast focus desktop
+alt - 1 : ~/.config/yabai/scripts/yb_focus_space.sh 1
+alt - 2 : ~/.config/yabai/scripts/yb_focus_space.sh 2
+alt - 3 : ~/.config/yabai/scripts/yb_focus_space.sh 3
+alt - 4 : ~/.config/yabai/scripts/yb_focus_space.sh 4
+alt - 5 : ~/.config/yabai/scripts/yb_focus_space.sh 5
+alt - 6 : ~/.config/yabai/scripts/yb_focus_space.sh 6
+alt - 7 : ~/.config/yabai/scripts/yb_focus_space.sh 7
+alt - 8 : ~/.config/yabai/scripts/yb_focus_space.sh 8
+alt - 9 : ~/.config/yabai/scripts/yb_focus_space.sh 9
+alt - 0 : ~/.config/yabai/scripts/yb_focus_space.sh 10
+
+# send window to desktop 
+alt + shift - 1 : ~/.config/yabai/scripts/yb_move_window_to_space.sh  1
+alt + shift - 2 : ~/.config/yabai/scripts/yb_move_window_to_space.sh  2
+alt + shift - 3 : ~/.config/yabai/scripts/yb_move_window_to_space.sh  3
+alt + shift - 4 : ~/.config/yabai/scripts/yb_move_window_to_space.sh  4
+alt + shift - 5 : ~/.config/yabai/scripts/yb_move_window_to_space.sh  5
+alt + shift - 6 : ~/.config/yabai/scripts/yb_move_window_to_space.sh  6
+alt + shift - 7 : ~/.config/yabai/scripts/yb_move_window_to_space.sh  7
+alt + shift - 8 : ~/.config/yabai/scripts/yb_move_window_to_space.sh  8
+alt + shift - 9 : ~/.config/yabai/scripts/yb_move_window_to_space.sh  9
+alt + shift - 0 : ~/.config/yabai/scripts/yb_move_window_to_space.sh 10
+
+
+# Focus monitor (, | . | /) (comma 0x2B, period 0x2F, slash 0X2C)
+ctrl + alt - 0x2B : ~/.config/yabai/scripts/yb_focus_display.sh 1
+ctrl + alt - 0x2F : ~/.config/yabai/scripts/yb_focus_display.sh 2
+ctrl + alt - 0x2C : ~/.config/yabai/scripts/yb_focus_display.sh 3
+
+# Refresh spaces (for when buggy conditions happen)
+ctrl + alt + cmd - r : ~/.config/yabai/scripts/displays_changed.sh
+
+# toggle sticky (show on all spaces)
+alt - s : yabai -m window --toggle sticky
+
+# toggle topmost (keep above other windows)
+alt - o : yabai -m window --toggle topmost
+
+# change layout of desktop
+# ctrl + alt - a : yabai -m space --layout bsp
+# ctrl + alt - d : yabai -m space --layout float
