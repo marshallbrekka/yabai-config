@@ -2,3 +2,4 @@
 
 source $HOME/.config/yabai/settings
 source $HOME/.config/yabai/signals
+source $HOME/.config/yabai/rules

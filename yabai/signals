@@ -14,3 +14,46 @@ yabai -m signal --add \
       label=display_removed \
       event=display_removed \
       action="~/.config/yabai/scripts/displays_changed.sh"
+
+# Put emacs on space 1
+yabai -m signal --add \
+      label=emacs \
+      app="^Emacs$" \
+      event=application_launched \
+      action="~/.config/yabai/scripts/assign_app.sh 1"
+
+# Put terminal on space 2
+yabai -m signal --add \
+      label=terminal \
+      app="^Terminal$" \
+      event=application_launched \
+      action="~/.config/yabai/scripts/assign_app.sh 2"
+
+# Put slack on space 3
+yabai -m signal --add \
+      label=slack \
+      app="^Slack$" \
+      event=application_launched \
+      action="~/.config/yabai/scripts/assign_app.sh 3"
+
+# Put messages space 3
+yabai -m signal --add \
+      label=messages \
+      app="^Messages$" \
+      event=application_launched \
+      action="~/.config/yabai/scripts/assign_app.sh 3"
+
+# Put notes space 4
+yabai -m signal --add \
+      label=notes \
+      app="^Notes$" \
+      event=application_launched \
+      action="~/.config/yabai/scripts/assign_app.sh 4"
+
+# Put spotify space 5
+yabai -m signal --add \
+      label=spotify \
+      app="^Spotify$" \
+      event=application_launched \
+      action="~/.config/yabai/scripts/assign_app.sh 5"
+

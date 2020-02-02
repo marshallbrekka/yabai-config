@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+# float system preferences
+yabai -m rule --add \
+      label=system_preferences \
+      app="^System Preferences$" \
+      manage=off
+
+# show digital colour meter topmost and on all spaces
+yabai -m rule --add \
+      label=color_meter \
+      app="^Digital Colou?r Meter$" \
+      manage=off \
+      sticky=on
