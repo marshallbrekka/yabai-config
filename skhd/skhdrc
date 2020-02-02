@@ -14,6 +14,10 @@ shift + alt - j : yabai -m window --swap next
 ctrl + alt - k  : yabai -m window --display prev;
 ctrl + alt - j  : yabai -m window --display next;
 
+# resize window
+cmd + alt - k  : ~/.config/yabai/scripts/resize_window.sh 100
+cmd + alt - j  : ~/.config/yabai/scripts/resize_window.sh -100
+
 # Toggle Fullscreen
 alt + ctrl - f : yabai -m window --toggle zoom-fullscreen
 
