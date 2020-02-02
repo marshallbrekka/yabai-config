@@ -1,8 +1,13 @@
 #!/usr/bin/env sh
 
 yabai -m signal --add \
-      label=uebersicht \
+      label=space_changed \
       event=space_changed \
+      action="~/.config/yabai/scripts/signal_uebersicht.sh"
+
+yabai -m signal --add \
+      label=display_changed \
+      event=display_changed \
       action="~/.config/yabai/scripts/signal_uebersicht.sh"
 
 yabai -m signal --add \

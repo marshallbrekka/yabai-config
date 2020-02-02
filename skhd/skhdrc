@@ -11,8 +11,8 @@ shift + alt - k : yabai -m window --swap prev
 shift + alt - j : yabai -m window --swap next
 
 # send window to monitor
-ctrl + alt - k  : yabai -m window --display prev;
-ctrl + alt - j  : yabai -m window --display next;
+ctrl + alt - k  : yabai -m window --display prev; yabai -m display --focus prev
+ctrl + alt - j  : yabai -m window --display next; yabai -m display --focus next
 
 # resize window
 cmd + alt - k  : ~/.config/yabai/scripts/resize_window.sh 100
@@ -60,6 +60,9 @@ ctrl + alt - 0x2C : ~/.config/yabai/scripts/yb_focus_display.sh 3
 
 # Refresh spaces (for when buggy conditions happen)
 ctrl + alt + cmd - r : ~/.config/yabai/scripts/displays_changed.sh
+
+ctrl + alt + cmd - s : ~/.config/yabai/scripts/signal_uebersicht.sh
+
 
 # toggle sticky (show on all spaces)
 alt - s : yabai -m window --toggle sticky
