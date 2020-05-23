@@ -70,6 +70,8 @@ alt - s : yabai -m window --toggle sticky
 # toggle topmost (keep above other windows)
 alt - o : yabai -m window --toggle topmost
 
+# Toggle float of window
+ctrl + alt - t: yabai -m window --toggle float
+
 # change layout of desktop
-# ctrl + alt - a : yabai -m space --layout bsp
-# ctrl + alt - d : yabai -m space --layout float
+ctrl + alt - d : ~/.config/yabai/scripts/toggle_space_layout.sh
