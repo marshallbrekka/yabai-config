@@ -53,14 +53,14 @@ alt + shift - 9 : ~/.config/yabai/scripts/yb_move_window_to_space.sh  -s 9
 alt + shift - 0 : ~/.config/yabai/scripts/yb_move_window_to_space.sh  -s 10
 
 # Move window to display (, | . | /) (comma 0x2B, period 0x2F, slash 0X2C)
-ctrl + alt - 0x2B : ~/.config/yabai/scripts/yb_move_window_to_space.sh -f -d 0
-ctrl + alt - 0x2F : ~/.config/yabai/scripts/yb_move_window_to_space.sh -f -d 1
-ctrl + alt - 0x2C : ~/.config/yabai/scripts/yb_move_window_to_space.sh -f -d 2
+alt + shift - 0x2B : ~/.config/yabai/scripts/yb_move_window_to_space.sh -f -d 0
+alt + shift - 0x2F : ~/.config/yabai/scripts/yb_move_window_to_space.sh -f -d 1
+alt + shift - 0x2C : ~/.config/yabai/scripts/yb_move_window_to_space.sh -f -d 2
 
 # Focus monitor (, | . | /) (comma 0x2B, period 0x2F, slash 0X2C)
-ctrl + alt + cmd - 0x2B : ~/.config/yabai/scripts/yb_focus_display.sh 0
-ctrl + alt + cmd - 0x2F : ~/.config/yabai/scripts/yb_focus_display.sh 1
-ctrl + alt + cmd - 0x2C : ~/.config/yabai/scripts/yb_focus_display.sh 2
+alt - 0x2B : ~/.config/yabai/scripts/yb_focus_display.sh 0
+alt - 0x2F : ~/.config/yabai/scripts/yb_focus_display.sh 1
+alt - 0x2C : ~/.config/yabai/scripts/yb_focus_display.sh 2
 
 # Refresh spaces (for when buggy conditions happen)
 ctrl + alt + cmd - r : ~/.config/yabai/scripts/displays_changed.sh
