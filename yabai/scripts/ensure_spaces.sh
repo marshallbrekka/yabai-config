@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e;
 MAX_SPACES=10
+$HOME/.config/yabai/scripts/test_app.js
+exit 0
 
 # Grabs the index of each display, and returns each on its own line
 # so we can iterate using normal bash semantics
@@ -21,7 +23,7 @@ for display_index in $(yabai -m query --displays | jq -c 'map(.index)[]'); do
             removed=$((removed + 1))
         else
             echo "Labeling space ${space_index} in display ${display_index} as $new_count"
-            yabai -m space $space_index --label "display-${display_index}_space-${new_count}"
+            yabai -m space $space_index --label "d:${display_index}:${new_count}"
         fi
         count=$new_count
         last_space_index=$space_index

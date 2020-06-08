@@ -19,6 +19,7 @@ while [ "$1" != "" ]; do
 done
 
 display_index=""
+display_uuid=""
 space_label=""
 
 # If the caller specified the desired display as an argument
@@ -26,16 +27,20 @@ space_label=""
 # otherwise assume the current display
 if [[ "$display_arg" != "" ]]; then
     echo "Looking up display by $display_arg"
-    display_index=$(yabai -m query --displays | jq -e "sort_by(.frame.x) | .[$display_arg].index")
+    display_data=$(yabai -m query --displays | jq -e "sort_by(.frame.x) | .[$display_arg]")
+    display_index=$(echo "$display_data" | jq -e -r ".index")
+    display_uuid=$(echo "$display_data" | jq -e -r ".uuid")
 else
-    display_index=$(yabai -m query --displays --display | jq -c '.index')
+    display_data=$(yabai -m query --displays --display)
+    display_index=$(echo "$display_data" | jq -e -r ".index")
+    display_uuid=$(echo "$display_data" | jq -e -r ".uuid")
 fi
-echo "found display index $display_index"
+echo "found display index $display_index $display_uuid"
 
 if [[ "$space_arg" != "" ]]; then
-    space_label="display-${display_index}_space-${space_arg}"
+    space_label="d:${display_uuid}:${space_arg}"
 else
-    space_label=$(yabai -m query --spaces --display $display_index | jq -e -r '.[] | select(.visible == 1) | .label')
+    space_label=$(yabai -m query --spaces --display $display_index | jq -e -r '.[] | select(.visible == 1) | .index')
 fi
 
 echo "moving window to space with label $space_label"
