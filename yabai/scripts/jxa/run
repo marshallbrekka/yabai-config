@@ -1,0 +1,44 @@
+#!/usr/bin/env osascript -l JavaScript
+
+// Adapted from
+// https://michelenasti.com/2018/10/02/let-s-write-a-simple-version-of-the-require-function.html
+const require = function() {
+    const cache = Object.create(null);
+    const app = Application.currentApplication();
+    app.includeStandardAdditions = true;
+
+    const myRequire = function(name)  {
+	if (!(name in cache)) {
+	    var handle = app.openForAccess(name);
+	    var contents = app.read(handle);
+	    app.closeAccess(name);
+
+            let module = {exports: {}};
+            cache[name] = module;
+            let wrapper = Function("require, exports, module", contents);
+	    try {
+		wrapper(myRequire, module.exports, module);
+	    } catch (e) {
+		console.log(e instanceof SyntaxError); 
+		console.log(e.message);                
+		console.log(e.name);                   
+		console.log(e.fileName);               
+		console.log(e.lineNumber);             
+		console.log(e.columnNumber);           
+		console.log(e.stack);
+		throw e
+	    }
+            
+	}
+	return cache[name].exports;
+    }
+    return myRequire
+}()
+
+function run(argv) {
+    if (argv.length == 0) {
+	throw "Missing required arg: file to run. run <path>.js (args)"
+    }
+    path = argv.shift()
+    require(path)(argv);
+}
