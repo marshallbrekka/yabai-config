@@ -60,31 +60,72 @@ function spacesToRemove(displays, spaces) {
 
 
 function ensureSpacesForDisplay(display, spacesObj) {
-    let count = 0
-    let removed = 0
-    display.spaces.map(spaceIndex => {
-	let space = spacesObj[spaceIndex]
-	if (count >= MAX_SPACES) {
-	    console.log(`Destroying space ${spaceIndex} in display ${display.index}`)
-	    yabai.spaceDestroy(spaceIndex-removed)
-	    removed++
-	} else {
-	    count++
-	    let label = labelPkg.create(display, count)
-	    console.log(`Labeling space ${spaceIndex} in display ${display.index} as ${label})`)
-	    yabai.spaceLabel(spaceIndex,label)
-	}
-    })
+    // Expand the displays space indices into space objects.
+    // Filter out any fullscreen spaces (those are not managed by us).
+    // Sort by the display index in ascending order (at least initially).
+    const spaces = display.spaces.
+	  map(index => spacesObj[index]).
+	  filter(space => space['native-fullscreen'] === 0).
+	  sort((a, b) => sortCompare(a.index, b.index))
 
-    console.log("Done managing existing spaces, checking if we need to add more")
-    let lastSpaceIndex = display.spaces[display.spaces.length - 1]
-    while (count < MAX_SPACES) {
-	count++
-	let label = labelPkg.create(display, count)
-	console.log(`Adding space ${count} after ${lastSpaceIndex} in display ${display.index} as ${label})`)
-	yabai.spaceCreate(lastSpaceIndex)
-	lastSpaceIndex++
-	yabai.spaceLabel(lastSpaceIndex, label)
+    // The return arrays
+    let destroy = [], create = [], label = [], windows = []
+
+    // Array of pre-existing spaces that require a label update
+    // Ex: [[9, 'd:<uuid>:9'], [10, 'd:<uuid>:10']]
+    label = spaces.
+	slice(0, Math.min(spaces.length, MAX_SPACES)).
+	filter(space => space.label !== labelPkg.create(display, space.index)).
+	map(space => [space.index, labelPkg.create(display, space.index)])
+
+    // If we have too many, populate `destroy` and `windows` with
+    // spaces that should be removed, and windows that should be assigned to a new space
+    if (spaces.length > MAX_SPACES) {
+	const spacesToDestroy = spaces.slice(MAX_SPACES)
+
+	// Populate destroy with a reversed order (by index) list of spaces to
+	// remove. Ex: [13, 12, 11]
+	destroy = spacesToDestroy.map(space => space.index).reverse()
+
+	// Populate with array if windows to assign to other spaces
+	// Ex: [[757, "d:<uuid>:3"], [989, "d:<uuid>:6"]]
+	//
+	// We can't do anything useful with spaces that have no windows
+	// or have a label that doesn't conform to our system, so just ignore
+	// those and let macOS do what it does when the space is destroyed.
+	windows = spacesToDestroy.
+	    filter(space => space.windows.length > 0 && labelPkg.conforms(space.label)).
+	    map(space => {
+		const [displayUUID, spaceNumber] = labelPkg.parse(space.label)
+		const label = labelPkg.create(display, spaceNumber)
+		return space.windows.map(windowId => [windowId, label])
+	    }).
+	    flat()
+    }
+
+    // If we have too few spaces, then populate `create` and append to `label`
+    // with spaces that should be created, and subsequently labeled.
+    if (spaces.length < MAX_SPACES) {
+	create = MAX_SPACES - spaces.length
+	// Get the last space index (could be a fullscreen one) so we can
+	// determine what the future space indicies will be as we add them
+	let lastIndex = display.spaces.slice().sort().reverse()[0]
+
+	// For each new space, we need to also label it based on the
+	// expected index it will be.
+	for (let i = 0; i < create; i++) {
+	    let nextIndex = lastIndex + 1
+	    create.push([lastIndex])
+	    label.push([nextIndex, labelPkg.create(display, nextIndex)])
+	    lastIndex = nextIndex
+	}
+    }
+
+    return {
+	create: create,
+	destroy: destroy,
+	label: label,
+	windows: windows,
     }
 }
 

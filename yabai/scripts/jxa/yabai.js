@@ -44,17 +44,35 @@ function readPipe(pipe) {
     return ObjC.unwrap(data)
 }
 
-exports.queryDisplays = () => runYabai2(["-m", "query", "--displays"], true)
-exports.querySpaces = () => runYabai2(["-m", "query", "--spaces"], true)
-exports.spaceDestroy = (index) => {
+
+function queryDisplays() {
+    runYabai2(["-m", "query", "--displays"], true)
+}
+function querySpaces() {
+    runYabai2(["-m", "query", "--spaces"], true)
+}
+
+function spaceDestroy(index) {
     runYabai2(["-m", "space", index, "--destroy"])
 }
-exports.spaceLabel = (index, label) => {
+
+function spaceLabel(index, label) {
     runYabai2(["-m", "space", index, "--label", label])
 }
-exports.spaceCreate = (index, label) => {
+
+function spaceCreate(index, label) {
     runYabai2(["-m", "space", index, "--create"])
 }
-exports.windowAssignSpace = (windowID, space) => {
+
+function windowAssignSpace(windowID, space) {
     runYabai2(["-m", "window", windowID, "--space", space])
+}
+
+module.exports = {
+    queryDisplays: queryDisplays,
+    querySpaces: querySpaces,
+    spaceDestroy: spaceDestroy,
+    spaceLabel: spaceLabel,
+    spaceCreate: spaceCreate,
+    windowAssignSpace: windowAssignSpace,
 }

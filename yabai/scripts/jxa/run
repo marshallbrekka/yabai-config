@@ -35,10 +35,18 @@ const require = function() {
     return myRequire
 }()
 
+ObjC.import("stdlib")
 function run(argv) {
     if (argv.length == 0) {
 	throw "Missing required arg: file to run. run <path>.js (args)"
     }
     path = argv.shift()
-    require(path)(argv);
+    try {
+	return require(path)(argv);
+    } catch (x) {
+	console.log(x)
+	console.log("Stack trace:")
+	x.stack.split("\n").forEach(line => console.log("\t"+line))
+	$.exit(1)
+    }
 }
