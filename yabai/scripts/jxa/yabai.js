@@ -46,10 +46,10 @@ function readPipe(pipe) {
 
 
 function queryDisplays() {
-    runYabai2(["-m", "query", "--displays"], true)
+    return runYabai2(["-m", "query", "--displays"], true)
 }
 function querySpaces() {
-    runYabai2(["-m", "query", "--spaces"], true)
+    return runYabai2(["-m", "query", "--spaces"], true)
 }
 
 function spaceDestroy(index) {
@@ -60,7 +60,7 @@ function spaceLabel(index, label) {
     runYabai2(["-m", "space", index, "--label", label])
 }
 
-function spaceCreate(index, label) {
+function spaceCreate(index) {
     runYabai2(["-m", "space", index, "--create"])
 }
 

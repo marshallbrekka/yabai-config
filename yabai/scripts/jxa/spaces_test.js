@@ -1,5 +1,5 @@
 const spaces = require("spaces.js")
-const util   = require("util.js")
+const util   = require("test_util.js")
 
 exports.actionsForDisplay_NoChanges = function() {
     spaces.MAX_SPACES = 1

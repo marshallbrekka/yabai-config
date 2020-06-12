@@ -7,20 +7,27 @@ const require = function() {
     const app = Application.currentApplication();
     app.includeStandardAdditions = true;
 
-    const myRequire = function(name)  {
-	if (!(name in cache)) {
-	    var handle = app.openForAccess(name);
+    const myRequire = function(root, name)  {
+	let path
+	if (root !== null) {
+	    path = Path(root + "/" + name).toString()
+	} else {
+	    path = Path(name).toString()
+	}
+	if (!(path in cache)) {
+	    console.log("reading path", path)
+	    var handle = app.openForAccess(path);
 	    var contents = app.read(handle);
-	    app.closeAccess(name);
+	    app.closeAccess(path);
 
             let module = {exports: {}};
-            cache[name] = module;
+            cache[path] = module;
             let wrapper = Function("require, exports, module", contents);
+	    let newRoot = path.substring(0, path.lastIndexOf("/"))
 	    try {
-		wrapper(myRequire, module.exports, module);
+		wrapper(name => myRequire(newRoot, name), module.exports, module);
 	    } catch (e) {
-		console.log(e instanceof SyntaxError); 
-		console.log(e.message);                
+		console.log(path, e)
 		console.log(e.name);                   
 		console.log(e.fileName);               
 		console.log(e.lineNumber);             
@@ -30,9 +37,9 @@ const require = function() {
 	    }
             
 	}
-	return cache[name].exports;
+	return cache[path].exports;
     }
-    return myRequire
+    return name => myRequire(null, name)
 }()
 
 ObjC.import("stdlib")
@@ -41,6 +48,7 @@ function run(argv) {
 	throw "Missing required arg: file to run. run <path>.js (args)"
     }
     path = argv.shift()
+    console.log(Path(path))
     try {
 	return require(path)(argv);
     } catch (x) {

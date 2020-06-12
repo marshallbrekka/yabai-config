@@ -1,16 +1,8 @@
-const labelPkg = require("./label.js")
+const labelPkg = require("label.js")
+const yabai    = require("yabai.js")
+const util     = require("util.js")
 
 exports.MAX_SPACES = 10
-
-function sortCompare(a, b) {
-    if (a < b) {
-	return -1
-    }
-    if (a > b) {
-	return 1
-    }
-    return 0
-}
 
 exports.actionsForDisplay = actionsForDisplay
 function actionsForDisplay(display, spacesObj) {
@@ -22,7 +14,7 @@ function actionsForDisplay(display, spacesObj) {
     const spaces = display.spaces.
 	  map(index => spacesObj[index]).
 	  filter(space => space['native-fullscreen'] === 0).
-	  sort((a, b) => sortCompare(a.index, b.index))
+	  sort((a, b) => util.sortCompare(a.index, b.index))
 
     // The return arrays
     let destroy = [], create = [], label = [], windows = []
@@ -31,8 +23,8 @@ function actionsForDisplay(display, spacesObj) {
     // Ex: [[9, 'd:<uuid>:9'], [10, 'd:<uuid>:10']]
     label = spaces.
 	slice(0, Math.min(spaces.length, MAX_SPACES)).
-	filter(space => space.label !== labelPkg.create(display, space.index)).
-	map(space => [space.index, labelPkg.create(display, space.index)])
+	filter((space, index) => space.label !== labelPkg.create(display, index + 1)).
+	map((space, index) => [space.index, labelPkg.create(display, index + 1)])
 
     // If we have too many, populate `destroy` and `windows` with
     // spaces that should be removed, and windows that should be assigned to a new space
@@ -83,4 +75,22 @@ function actionsForDisplay(display, spacesObj) {
 	label: label,
 	windows: windows,
     }
+}
+
+exports.applyActions = applyActions
+// Applies the actions that resulted from `actionsForDisplay`.
+// The order in which the actions are applied is incredibly important
+// as many operations rely on a space or display index, and the indexes can change
+// as spaces are added/removed.
+//
+// Order should be
+// 1. Apply window assignment changes
+// 2. Destroy spaces (actions should already be ordered from high to low index)
+// 3. Create new spaces (actions should already be ordered from low to high index)
+// 4. Apply labels
+function applyActions(actions) {
+    actions.windows.forEach(([id, space]) => yabai.windowAssignSpace(id, space))
+    actions.destroy.forEach(spaceIndex => yabai.spaceDestroy(spaceIndex))
+    actions.create.forEach(afterIndex => yabai.spaceCreate(afterIndex))
+    actions.label.forEach(([spaceIndex, label]) => yabai.spaceLabel(spaceIndex, label))
 }
