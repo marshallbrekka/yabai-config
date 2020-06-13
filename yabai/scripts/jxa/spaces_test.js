@@ -213,3 +213,68 @@ exports.actionsForDisplay_DestroySpaces = function() {
 	throw `Expected windows ${JSON.stringify(expectedWindows)}\n\tbut got ${JSON.stringify(result.windows)}`
     }
 }
+
+exports.displayAssignments = function() {
+    const oldDisplays = [
+	{
+	    "id":123,
+	    "uuid":"ABC",
+	    "index":1,
+	    "frame":{
+		"x":0.0,
+	    }
+	},
+	{
+	    "id":456,
+	    "uuid":"DEF",
+	    "index":2,
+	    "frame":{
+		"x":-895,
+	    }
+	},
+	{
+	    "id":789,
+	    "uuid":"GHI",
+	    "index":3,
+	    "frame":{
+		"x":209,
+	    }
+	},
+    ]
+    const currentDisplays = [
+	{
+	    "id":987,
+	    "uuid":"AAA",
+	    "index":1,
+	    "frame":{
+		"x":0,
+	    }
+	},
+	{
+	    "id":654,
+	    "uuid":"BBB",
+	    "index":2,
+	    "frame":{
+		"x":-800,
+	    }
+	},
+	{
+	    "id":321,
+	    "uuid":"CCC",
+	    "index":3,
+	    "frame":{
+		"x":-300,
+	    }
+	},
+    ]
+    const expected = {
+	"ABC":"CCC",
+	"DEF":"BBB",
+	"GHI":"AAA",
+    }
+    const result = spaces._tests.displayAssignments(oldDisplays, currentDisplays)
+
+    if (!util.deepCompare(expected, result)) {
+	throw `Expected ${JSON.stringify(expected)} but got ${JSON.stringify(result)}`
+    }
+}

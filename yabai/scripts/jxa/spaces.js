@@ -94,3 +94,22 @@ function applyActions(actions) {
     actions.create.forEach(afterIndex => yabai.spaceCreate(afterIndex))
     actions.label.forEach(([spaceIndex, label]) => yabai.spaceLabel(spaceIndex, label))
 }
+
+
+// Given two arrays of display objects (must be equal in length)
+// returns an object where the keys are the old display UUIDs,
+// and the value is the new display UUID that it should point to.
+function displayAssignments(oldDisplays, currentDisplays) {
+    const sortedCurrent = currentDisplays.slice(0)
+    const sortedOld = oldDisplays.slice(0)
+    sortedCurrent.sort((a, b) => util.sortCompare(a.frame.x, b.frame.x))
+    sortedOld.sort((a, b) => util.sortCompare(a.frame.x, b.frame.x))
+
+    return Object.fromEntries(sortedOld.map((oldDisplay, index) => {
+	return [oldDisplay.uuid, sortedCurrent[index].uuid]
+    }))
+}
+
+exports._tests = {
+    displayAssignments: displayAssignments
+}
