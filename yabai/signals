@@ -1,6 +1,16 @@
 #!/usr/bin/env sh
 
 yabai -m signal --add \
+      label=update_state_window_created \
+      event=window_created \
+      action="~/.config/yabai/scripts/window_created.sh window_created"
+
+yabai -m signal --add \
+      label=update_state_application_launched \
+      event=application_launched \
+      action="~/.config/yabai/scripts/window_created.sh"
+
+yabai -m signal --add \
       label=space_changed \
       event=space_changed \
       action="~/.config/yabai/scripts/signal_uebersicht.sh"
@@ -13,7 +23,7 @@ yabai -m signal --add \
 yabai -m signal --add \
       label=display_added \
       event=display_added \
-      action="~/.config/yabai/scripts/displays_changed.sh"
+      action="~/.config/yabai/scripts/displays_changed.sh display_added"
 
 yabai -m signal --add \
       label=display_removed \

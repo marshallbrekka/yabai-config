@@ -51,3 +51,5 @@ if [[ $focus_arg == 1 ]]; then
     echo "Focusing window $window_id"
     yabai -m window --focus $window_id
 fi
+
+~/.config/yabai/scripts/jxa/run ~/.config/yabai/scripts/jxa/main.js update-state

@@ -4,11 +4,12 @@ const labelPkg  = require("label.js")
 const spacesPkg = require("spaces.js")
 const statePkg  = require("state.js")
 
-function ensureSpaces(dryRun) {
-    let displays = yabai.queryDisplays()
-    let spaces = yabai.querySpaces()
-
+function ensureSpaces(dryRun, displayAdded) {
+    const oldState = statePkg.loadState()
+    const displays  = yabai.queryDisplays()
+    const spaces    = yabai.querySpaces()
     const spacesObj = Object.fromEntries(spaces.map(s => [s.index, s]))
+
     // Ensure the displays in reverse index order (largest to smallest).
     // There are some space operations that need to be done using the space index,
     // and if we add spaces in the middle index, it pushes the higher index
@@ -19,12 +20,24 @@ function ensureSpaces(dryRun) {
 	  map(display => spacesPkg.actionsForDisplay(display, spacesObj)).
 	  reverse()
 
+    let expandWindowActions = []
+
+    if (displayAdded) {
+	expandWindowActions = spacesPkg.stateToWindowAssignments(oldState, displays, spaces)
+	console.log("Found expansion window actions", JSON.stringify(expandWindowActions))
+    }
+
     console.log("Actions", JSON.stringify(displayActions))
     if (dryRun) {
 	return
     }
-
     displayActions.forEach(actions => spacesPkg.applyActions(actions))
+
+    // These actions have to be run after all of the space related actions have occured
+    // as they depend on potentially new spaces being created, re-labeled, etc.
+    expandWindowActions.forEach(([id, space]) => yabai.windowAssignSpace(id, space))
+
+    statePkg.saveState(oldState, yabai.queryDisplays(), yabai.querySpaces())
 }
 
 
@@ -66,7 +79,7 @@ module.exports = run
 function run(argv) {
     switch (argv[0]) {
     case 'ensure-spaces':
-	ensureSpaces(false)
+	ensureSpaces(false, argv[1] === "display_added")
 	break;
 
     case 'update-state':

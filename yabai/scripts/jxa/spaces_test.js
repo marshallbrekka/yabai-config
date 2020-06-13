@@ -278,3 +278,60 @@ exports.displayAssignments = function() {
 	throw `Expected ${JSON.stringify(expected)} but got ${JSON.stringify(result)}`
     }
 }
+
+exports.windowAssignments = function() {
+    const displayMappings = {
+	"ABC":"CCC",
+	"DEF":"BBB",
+    }
+    const prevSpaces = [
+	{
+	    "id":1,
+	    "label":"d:ABC:1",
+	    "index":1,
+	    "display":1,
+	    "windows":[1,2,3],
+	    "native-fullscreen":0,
+	},
+	{
+	    "id":2,
+	    "label":"d:DEF:2",
+	    "index":2,
+	    "display":2,
+	    "windows":[5],
+	    "native-fullscreen":0,
+	}
+    ]
+    const newSpaces = [
+	{
+	    "id":1,
+	    "label":"d:CCC:1",
+	    "index":1,
+	    "display":1,
+	    // Window 1 is already on the correct space, so shouldn't be in the response.
+	    // Window 4 doesn't exist in old state, we won't do anything with it.
+	    // Window 5 should be assigned to d:BBB:2.
+	    "windows":[1, 4, 5],
+	    "native-fullscreen":0,
+	},
+	{
+	    "id":2,
+	    "label":"d:BBB:2",
+	    "index":2,
+	    "display":2,
+	    // Windows 2 and 3 should be assigned to d:CCC:1.
+	    "windows":[2,3],
+	    "native-fullscreen":0,
+	}
+    ]
+    const expected = [
+	[5, "d:BBB:2"],
+	[2, "d:CCC:1"],
+	[3, "d:CCC:1"],
+    ]
+    const result = spaces._tests.windowAssignments(displayMappings, prevSpaces, newSpaces)
+
+    if (!util.deepCompare(expected, result)) {
+	throw `Expected ${JSON.stringify(expected)} but got ${JSON.stringify(result)}`
+    }
+}

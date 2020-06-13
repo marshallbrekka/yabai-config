@@ -20,7 +20,7 @@ function loadState() {
     // If there are no file attrs, then we know that the
     // state file does not exist
     const fileAttrs = fm.attributesOfItemAtPathError(path, null)
-    if (ObjC.unwrap() === undefined) {
+    if (ObjC.unwrap(fileAttrs) === undefined) {
 	return []
     }
 

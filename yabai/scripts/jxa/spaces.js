@@ -23,8 +23,8 @@ function actionsForDisplay(display, spacesObj) {
     // Ex: [[9, 'd:<uuid>:9'], [10, 'd:<uuid>:10']]
     label = spaces.
 	slice(0, Math.min(spaces.length, MAX_SPACES)).
-	filter((space, index) => space.label !== labelPkg.create(display, index + 1)).
-	map((space, index) => [space.index, labelPkg.create(display, index + 1)])
+	filter((space, index) => space.label !== labelPkg.create(display.uuid, index + 1)).
+	map((space, index) => [space.index, labelPkg.create(display.uuid, index + 1)])
 
     // If we have too many, populate `destroy` and `windows` with
     // spaces that should be removed, and windows that should be assigned to a new space
@@ -45,7 +45,7 @@ function actionsForDisplay(display, spacesObj) {
 	    filter(space => space.windows.length > 0 && labelPkg.conforms(space.label)).
 	    map(space => {
 		const [displayUUID, spaceNumber] = labelPkg.parse(space.label)
-		const label = labelPkg.create(display, spaceNumber)
+		const label = labelPkg.create(display.uuid, spaceNumber)
 		return space.windows.map(windowId => [windowId, label])
 	    }).
 	    flat()
@@ -64,7 +64,7 @@ function actionsForDisplay(display, spacesObj) {
 	for (let i = 1; i <= createCount; i++) {
 	    let nextIndex = lastIndex + 1
 	    create.push(lastIndex)
-	    label.push([nextIndex, labelPkg.create(display, spaces.length + i)])
+	    label.push([nextIndex, labelPkg.create(display.uuid, spaces.length + i)])
 	    lastIndex = nextIndex
 	}
     }
@@ -110,6 +110,51 @@ function displayAssignments(oldDisplays, currentDisplays) {
     }))
 }
 
+function windowAssignments(displayMappings, prevSpaces, newSpaces) {
+    const prevWindows = Object.fromEntries(
+	prevSpaces.flatMap(space => {
+	    return space.windows.map(windowID => [windowID, space.label])
+	})
+    )
+
+    // Return window assignments [[windowID, spaceLabel]]
+    return newSpaces.
+	flatMap(space => space.windows.map(windowID => [windowID, space.label])).
+	map(([windowID, currentSpaceLabel]) => {
+	    const prevSpaceLabel = prevWindows[windowID]
+	    if (!prevSpaceLabel) {
+		console.log("did not find prev space label for window", windowID)
+		return
+	    }
+	    const [prevUUID, number] = labelPkg.parse(prevSpaceLabel)
+	    const newUUID = displayMappings[prevUUID]
+	    const newSpaceLabel = labelPkg.create(newUUID, number)
+	    if (newSpaceLabel === currentSpaceLabel) {
+		console.log("current and new label are space", windowID, newSpaceLabel)
+		return
+	    }
+	    return [windowID, newSpaceLabel]
+	}).
+	filter(assignment => assignment)
+}
+
 exports._tests = {
-    displayAssignments: displayAssignments
+    displayAssignments: displayAssignments,
+    windowAssignments: windowAssignments,
+}
+
+exports.stateToWindowAssignments = stateToWindowAssignments
+function stateToWindowAssignments(state, displays, spaces) {
+    console.log("prior state", JSON.stringify(state))
+    const prev = state[displays.length]
+
+    // If there is no prior state for the given number of displays just return
+    if (!prev) {
+	console.log("no prior state found, exiting")
+	return []
+    }
+
+    const displayMappings = displayAssignments(prev.displays, displays)
+    console.log("using display assignments", JSON.stringify(displayMappings))
+    return windowAssignments(displayMappings, prev.spaces, spaces)
 }

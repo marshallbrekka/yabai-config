@@ -1,5 +1,5 @@
-function spaceLabel(display, spaceNumber) {
-    return `d:${display.uuid}:${spaceNumber}`
+function spaceLabel(displayUUID, spaceNumber) {
+    return `d:${displayUUID}:${spaceNumber}`
 }
 
 function labelConforms(label) {
