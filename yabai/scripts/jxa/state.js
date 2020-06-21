@@ -1,6 +1,7 @@
 ObjC.import('Foundation')
 
-const path = "/tmp/marshall_yabai_state.json"
+// TODO put this in dynamic location based on user
+const path = "/tmp/yabai_state.json"
 const fm = $.NSFileManager.defaultManager
 
 function saveState(oldState, displays, spaces) {

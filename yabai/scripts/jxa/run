@@ -15,7 +15,6 @@ const require = function() {
 	    path = Path(name).toString()
 	}
 	if (!(path in cache)) {
-	    console.log("reading path", path)
 	    var handle = app.openForAccess(path);
 	    var contents = app.read(handle);
 	    app.closeAccess(path);
@@ -48,7 +47,6 @@ function run(argv) {
 	throw "Missing required arg: file to run. run <path>.js (args)"
     }
     path = argv.shift()
-    console.log(Path(path))
     try {
 	return require(path)(argv);
     } catch (x) {
