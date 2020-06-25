@@ -1,0 +1,58 @@
+#!/usr/bin/env osascript -l JavaScript
+
+// Adapted from
+// https://michelenasti.com/2018/10/02/let-s-write-a-simple-version-of-the-require-function.html
+const require = function() {
+    const cache = Object.create(null);
+    const app = Application.currentApplication();
+    app.includeStandardAdditions = true;
+
+    const myRequire = function(root, name)  {
+	let path
+	if (root !== null) {
+	    path = Path(root + "/" + name).toString()
+	} else {
+	    path = Path(name).toString()
+	}
+	if (!(path in cache)) {
+	    var handle = app.openForAccess(path);
+	    var contents = app.read(handle);
+	    app.closeAccess(path);
+
+            let module = {exports: {}};
+            cache[path] = module;
+            let wrapper = Function("require, exports, module", contents);
+	    let newRoot = path.substring(0, path.lastIndexOf("/"))
+	    try {
+		wrapper(name => myRequire(newRoot, name), module.exports, module);
+	    } catch (e) {
+		console.log(path, e)
+		console.log(e.name);                   
+		console.log(e.fileName);               
+		console.log(e.lineNumber);             
+		console.log(e.columnNumber);           
+		console.log(e.stack);
+		throw e
+	    }
+            
+	}
+	return cache[path].exports;
+    }
+    return name => myRequire(null, name)
+}()
+
+ObjC.import("stdlib")
+function run(argv) {
+    if (argv.length == 0) {
+	throw "Missing required arg: file to run. run <path>.js (args)"
+    }
+    path = argv.shift()
+    try {
+	return require(path)(argv);
+    } catch (x) {
+	console.log(x)
+	console.log("Stack trace:")
+	x.stack.split("\n").forEach(line => console.log("\t"+line))
+	$.exit(1)
+    }
+}
