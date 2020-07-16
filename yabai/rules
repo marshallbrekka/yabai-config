@@ -12,3 +12,5 @@ yabai -m rule --add \
       app="^Digital Colou?r Meter$" \
       manage=off \
       sticky=on
+
+yabai -m rule --add label=nomachine app=NoMachine title="^$" manage=off
